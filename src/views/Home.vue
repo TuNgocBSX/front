@@ -1,83 +1,328 @@
 <template>
-<div style="margin-left: 5%">
-    <div>
-        <b-card title="Xem tỷ lệ" tag="article" style="max-width: 20rem;" class="mb-2">
-            <b-form inline>
-                <b-input-group class="mb-2 mr-sm-2 mb-sm-0" prepend="Tổng số" style="margin-top:10px">
-                    <b-input id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-model="total" placeholder="40"></b-input>
-                </b-input-group>
-
-                <b-input-group class="mb-2 mr-sm-2 mb-sm-0" prepend="bắt đầu" style="margin-top:10px">
-                    <b-input id="inline-form-input-username" v-model="start" placeholder="72800"></b-input>
-                </b-input-group>
-
-                <b-input-group class="mb-2 mr-sm-2 mb-sm-0" prepend="kết thúc" style="margin-top:10px">
-                    <b-input id="inline-form-input-username" v-model="end" placeholder="72999"></b-input>
-                </b-input-group>
-                <b-input-group prepend="kết thúc" style="margin-top:10px" class="mb-2 mr-sm-2 mb-sm-0">
-                    <b-input id="inline-form-input-username" v-model="num" placeholder="Số xem"></b-input>
-                </b-input-group>
-                <b-button variant="primary" style="margin-top:10px" @click="viewper">xem</b-button>
-            </b-form>
-        </b-card>
-        <b-alert :show="isactive">{{ result }} %</b-alert>
-    </div>
-    <div style="margin-top: 10px">
-        <b-card title="Nhập số mới" tag="article" style="max-width: 20rem;" class="mb-2">
-            <b-form inline>
-                <label class="sr-only" for="inline-form-input-username">Số mới</label>
-                <b-input-group class="mb-2 mr-sm-2 mb-sm-0">
-                    <b-input id="inline-form-input-username" v-model="number" placeholder="Số mới"></b-input>
-                </b-input-group>
-                <b-button variant="primary" @click="add">lưu</b-button>
-            </b-form>
-        </b-card>
-    </div>
+<div style="width: 100%;height:100%">
+    <e-charts :options="line" theme="ovilia-green" ref="line" />
+    <e-charts :options="line2" theme="ovilia-green" ref="line2" />
 </div>
 </template>
 
 <script>
-import axios from "../axios";
+import ECharts from "vue-echarts/components/ECharts";
+import "echarts/lib/component/tooltip";
+import "echarts/lib/component/legend";
+import "echarts/lib/chart/line";
+
+import theme from "./theme.json";
+
+ECharts.registerTheme("ovilia-green", theme);
 export default {
     data() {
+        const dataChart = [
+            [1, 520],
+            [2, 536],
+            [3, 604],
+            [4, 551],
+            [5, 568],
+            [6, 574],
+            [7, 545],
+            [8, 576],
+            [9, 660],
+            [10, 566],
+            [11, 533],
+            [12, 513],
+            [13, 666],
+            [14, 525],
+            [15, 571],
+            [16, 672],
+            [17, 519],
+            [18, 598],
+            [19, 589],
+            [20, 445],
+            [21, 577],
+            [22, 562],
+            [23, 548],
+            [24, 622],
+            [25, 707],
+            [26, 611],
+            [27, 683],
+            [28, 631],
+            [29, 603],
+            [30, 719],
+            [31, 564],
+            [32, 680],
+            [33, 537],
+            [34, 546],
+            [35, 716],
+            [36, 720],
+            [37, 590],
+            [38, 638],
+            [39, 509],
+            [40, 673],
+            [41, 507],
+            [42, 621],
+            [43, 504],
+            [44, 510],
+            [45, 502],
+            [46, 587],
+            [47, 733],
+            [48, 593],
+            [49, 671],
+            [50, 600],
+            [51, 651],
+            [52, 596],
+            [53, 580],
+            [54, 543],
+            [55, 643],
+            [56, 678],
+            [57, 735],
+            [58, 535],
+            [59, 752],
+            [60, 721],
+            [61, 608],
+            [62, 715],
+            [63, 724],
+            [64, 668],
+            [65, 656],
+            [66, 759],
+            [67, 642],
+            [68, 708],
+            [69, 529],
+            [70, 609],
+            [71, 674],
+            [72, 585],
+            [73, 747],
+            [74, 555],
+            [75, 728],
+            [76, 663],
+            [77, 762],
+            [78, 553],
+            [79, 624],
+            [80, 522],
+            [81, 505],
+            [82, 634],
+            [83, 597],
+            [84, 709],
+            [85, 657],
+            [86, 776],
+            [87, 567],
+            [88, 538],
+            [89, 71],
+            [90, 712],
+            [91, 532],
+            [92, 527],
+            [93, 691],
+            [94, 770],
+            [95, 746],
+            [96, 779],
+            [97, 558],
+            [98, 701],
+            [99, 563],
+            [100, 744],
+            [101, 628],
+            [102, 793],
+        ];
+        const data2 = [
+            [103, 441],
+            [104, 514],
+            [105, 750],
+            [106, 582],
+            [107, 625],
+            [108, 639],
+            [109, 530],
+            [110, 756],
+            [111, 792],
+            [112, 794],
+            [113, 791],
+            [114, 516],
+            [115, 632],
+            [116, 670],
+            [117, 706],
+            [118, 795],
+            [119, 796],
+            [120, 775],
+            [121, 800],
+            [122, 736],
+            [123, 801],
+            [124, 601],
+            [125, 654],
+            [126, 751],
+            [127, 808],
+            [128, 802],
+            [129, 688],
+            [130, 741],
+            [131, 710],
+            [132, 818],
+            [133, 813],
+            [134, 584],
+            [135, 807],
+            [136, 524],
+            [137, 575],
+            [138, 766],
+            [139, 544],
+            [140, 821],
+            [141, 518],
+            [142, 722],
+            [143, 616],
+            [144, 777],
+            [145, 644],
+            [146, 696],
+            [147, 758],
+            [148, 665],
+            [149, 623],
+            [150, 540],
+            [151, 717],
+            [152, 803],
+            [153, 698],
+            [154, 677],
+            [155, 755],
+            [156, 764],
+            [157, 773],
+            [158, 512],
+            [159, 556],
+            [160, 740],
+            [161, 713],
+            [162, 552],
+            [163, 528],
+            [164, 686],
+            [165, 303],
+            [166, 761],
+            [167, 765],
+            [168, 830],
+            [169, 797],
+            [170, 517],
+            [171, 694],
+            [172, 588],
+            [173, 831],
+            [174, 850],
+            [175, 697],
+            [176, 581],
+            [177, 586],
+            [178, 655],
+            [179, 734],
+            [180, 560],
+            [181, 826],
+            [182, 617],
+            [183, 633],
+            [184, 703],
+            [185, 784],
+            [186, 561],
+            [187, 635],
+            [188, 324],
+            [189, 652],
+            [190, 506],
+            [191, 645],
+            [192, 627],
+            [193, 702],
+            [194, 618],
+        ];
+        const dateList = dataChart.map(function (item) {
+            return item[0];
+        });
+        const valueList = dataChart.map(function (item) {
+            return item[1];
+        });
+        const dateList2 = data2.map(function (item) {
+            return item[0];
+        });
+        const valueList2 = data2.map(function (item) {
+            return item[1];
+        });
         return {
-            start: "",
-            end: "",
-            total: "",
-            num: "",
-            number: "",
-
-            result: "",
-            isactive: false,
+            line: {
+                // Make gradient line here
+                visualMap: [{
+                    show: false,
+                    type: "continuous",
+                    seriesIndex: 1,
+                    min: 0,
+                    max: 500,
+                }, ],
+                polar: {
+                    center: ["50%", "54%"],
+                },
+                tooltip: {
+                    trigger: "axis",
+                },
+                xAxis: {
+                    data: dateList,
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false,
+                    },
+                },
+                series: {
+                    type: "line",
+                    showSymbol: false,
+                    data: valueList,
+                },
+            },
+            line2: {
+                // Make gradient line here
+                visualMap: [{
+                    show: false,
+                    type: "continuous",
+                    seriesIndex: 1,
+                    min: 0,
+                    max: 500,
+                }, ],
+                polar: {
+                    center: ["50%", "54%"],
+                },
+                tooltip: {
+                    trigger: "axis",
+                },
+                xAxis: {
+                    data: dateList2,
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false,
+                    },
+                },
+                series: {
+                    type: "line",
+                    showSymbol: false,
+                    data: valueList2,
+                },
+            },
+            fields: [{
+                    key: "last_name",
+                    sortable: true,
+                },
+                {
+                    key: "first_name",
+                    sortable: false,
+                },
+            ],
+            items: [{
+                    isActive: true,
+                    age: 40,
+                    first_name: "Dickerson",
+                    last_name: "Macdonald",
+                },
+                {
+                    isActive: false,
+                    age: 21,
+                    first_name: "Larsen",
+                    last_name: "Shaw",
+                },
+                {
+                    isActive: false,
+                    age: 89,
+                    first_name: "Geneva",
+                    last_name: "Wilson",
+                },
+                {
+                    isActive: true,
+                    age: 38,
+                    first_name: "Jami",
+                    last_name: "Carney",
+                },
+            ],
         };
     },
-    methods: {
-        viewper() {
-            const start = parseInt(this.start, 10);
-            const end = parseInt(this.end, 10);
-            const total = parseInt(this.total, 10);
-            axios
-                .post("/per", {
-                    start,
-                    end,
-                    total,
-                })
-                .then((res) => {
-                    this.isactive = true;
-                    this.result = res.body;
-                });
-        },
-        add() {
-            const number = parseInt(this.number, 10);
-            axios
-                .post("/", {
-                    num: number,
-                })
-                .then((res) => {
-                    this.isactive = true;
-                    this.result = res.body;
-                });
-        },
+    components: {
+        ECharts,
     },
 };
 </script>
